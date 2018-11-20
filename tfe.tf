@@ -1,10 +1,10 @@
 terraform {
   backend "remote" {
-    hostname = "ptfe.therealk.com"
+    hostname = "app.terraform.io"
     organization = "kawsar-org"
 
     workspaces {
-      name = "terraform-aws-s3"
+      name = "terraform-aws-s3-enhanced-remote-backend"
     }
   }
 }
