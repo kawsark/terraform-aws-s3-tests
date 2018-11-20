@@ -44,7 +44,7 @@ tfe pushconfig -vcs false -poll 5 .
 ```
 
 ## Steps using Terraform Enterprise with [Enhanced Remote Backend](https://www.terraform.io/docs/backends/types/remote.html)
-- Pending: use the `enhanced_remote` branch
+- Please use the [enhanced_remote_backend branch](https://github.com/kawsark/terraform-aws-s3-tests/tree/enhanced_remote_backend).
 
 ## Steps Terraform Enterprise with API invocations using `curl`
 - Pending
