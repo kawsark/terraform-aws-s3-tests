@@ -16,6 +16,8 @@ aws iam list-roles --query "Roles[?RoleName == 'test-role'].[RoleName, Arn]"
 ```
 git clone https://github.com/kawsark/terraform-aws-s3-tests.git
 cd terraform-aws-s3-tests
+git checkout assumerole
+
 export TFE_TOKEN=tfe_saas_token
 export TFE_WORKSPACE="terraform-aws-s3-tests"
 
