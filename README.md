@@ -1,9 +1,10 @@
 # terraform-aws-s3-tests
-Terraform code to create AWS S3 bucket with various configuration
-- Terraform OpenSource
-- Terraform Enterprise with [TFE CLI](https://github.com/hashicorp/tfe-cli)
-- Terraform Enterprise with [Enhanced Remote Backend](https://www.terraform.io/docs/backends/types/remote.html)
-- Terraform Enterprise with API invocations using `curl`
+Terraform code to create AWS S3 bucket with various methods:
+1. Terraform OpenSource CLI
+2. Terraform Enterprise with [TFE CLI](https://github.com/hashicorp/tfe-cli)
+3. Terraform Enterprise with [Enhanced Remote Backend](https://www.terraform.io/docs/backends/types/remote.html). Please use the [enhanced_remote_backend branch](https://github.com/kawsark/terraform-aws-s3-tests/tree/enhanced_remote_backend)
+4. Terraform OpenSource and Enterprise with AWS AssumeRole. Please use the [assumerole branch](https://github.com/kawsark/terraform-aws-s3-tests/tree/assumerole)
+5. Terraform Enterprise with API invocations using `curl`
 
 ## Steps using Terraform OpenSource
 ```
@@ -42,9 +43,6 @@ tfe pushconfig -vcs false -poll 5 .
 # View TFE UI
 # Destroy bucket from UI
 ```
-
-## Steps using Terraform Enterprise with [Enhanced Remote Backend](https://www.terraform.io/docs/backends/types/remote.html)
-- Please use the [enhanced_remote_backend branch](https://github.com/kawsark/terraform-aws-s3-tests/tree/enhanced_remote_backend).
 
 ## Steps Terraform Enterprise with API invocations using `curl`
 - Pending
