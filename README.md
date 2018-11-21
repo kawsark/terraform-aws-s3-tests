@@ -36,11 +36,11 @@ tfe workspace list
 tfe workspace new
 tfe pushvars -senv-var "AWS_ACCESS_KEY_ID=aws_access_key_id"
 tfe pushvars -senv-var "AWS_SECRET_ACCESS_KEY=aws_secret_access_key"
-tfe pushvars -senv-var "CONFIRM_DELETE=1"
+tfe pushvars -senv-var "CONFIRM_DESTROY=1"
 tfe pushvars -var "bucket_name=tf-test-bucket-$(date +%s)"
 tfe pushconfig -vcs false -poll 5 .
 
-# View TFE UI
+# View [TFE UI](https://app.terraform.io)
 # Destroy bucket from UI
 ```
 
