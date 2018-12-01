@@ -2,13 +2,17 @@
 Terraform code to create AWS S3 bucket with various configuration. This branch uses an ehanced remote backend:
 - Terraform Enterprise with [Enhanced Remote Backend](https://www.terraform.io/docs/backends/types/remote.html)
 ## Steps using Terraform Enterprise with [Enhanced Remote Backend](https://www.terraform.io/docs/backends/types/remote.html)
-- Pending: use the `enhanced_remote_backend` branch
+
 ```
 git clone https://github.com/kawsark/terraform-aws-s3-tests.git
 cd terraform-aws-s3-tests
 git checkout enhanced_remote_backend
 
+# Edit the tfe.tf file to reflect your organization.
+cp tfe.tf.example tfe.tf
+
 # Export credentials
+export TFE_TOKEN=your-tfe-token
 export AWS_ACCESS_KEY_ID=aws_access_key_id
 export AWS_SECRET_ACCESS_KEY=aws_secret_access_key
 
