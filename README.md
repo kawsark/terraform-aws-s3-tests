@@ -8,8 +8,10 @@ git clone https://github.com/kawsark/terraform-aws-s3-tests.git
 cd terraform-aws-s3-tests
 git checkout enhanced_remote_backend
 
-# Edit the tfe.tf file to reflect your organization.
+# Copy the tfe.tf.txample file and edit it
+# Adjust your organization, workspace and TFE server address (if using Private TFE)
 cp tfe.tf.example tfe.tf
+vi tfe.tf 
 
 # Export credentials
 export TFE_TOKEN=your-tfe-token
