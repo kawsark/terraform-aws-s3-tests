@@ -1,0 +1,8 @@
+terraform {
+  backend "s3" {
+    bucket = "my-tfstate-store"
+    key    = "tf-oss-state-store"
+    region = "us-east-1"
+    dynamodb_table = "tf-oss-state-lock"
+  }
+}
