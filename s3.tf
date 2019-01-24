@@ -14,6 +14,10 @@ variable "aws_region" {
   default = "us-east-1"
 }
 
+variable "env" {
+  default = "dev"
+}
+
 variable "aws_access_key" { }
 
 variable "aws_secret_key" { }
@@ -30,9 +34,9 @@ resource "aws_s3_bucket" "s3-test" {
   region   = "${var.aws_region}"
 
   tags {
-    Name        = "My bucket"
-    Environment = "Dev"
-    Owner       = "kawsar@hashicorp.com"
-    TTL         = "48h"
+    Name        = "${var.bucket_name}"
+    Environment = "${var.env}"
+    Owner       = "${var.owner}"
+    TTL         = "${var.ttl}"
   }
 }
