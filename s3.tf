@@ -18,10 +18,6 @@ variable "env" {
   default = "dev"
 }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 0cba79d9c67c1b1b904a53bebeaa657e1a38074c
 variable "aws_access_key" { }
 
 variable "aws_secret_key" { }
