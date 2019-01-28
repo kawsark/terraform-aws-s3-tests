@@ -18,14 +18,15 @@ variable "env" {
   default = "dev"
 }
 
-variable "aws_access_key" { }
-
-variable "aws_secret_key" { }
+  variable "role_arn" {
+  description = "The ARN of an existing role that Terraform should Assume"
+}
 
 provider "aws" {
   region = "${var.aws_region}"
-  access_key = "${var.aws_access_key}"
-  secret_key = "${var.aws_secret_key}"
+  assume_role {
+    role_arn     = "${var.role_arn}"
+  }
 }
 
 resource "aws_s3_bucket" "s3-test" {
