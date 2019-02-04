@@ -6,10 +6,12 @@ Note: Using the assume_role option in the AWS provider does require bootstrappin
 - If you end up using Private Terraform Enterprise (TFE) in AWS, you can also use the EC2 instance profile.
 - Witn the SaaS implementation of TFE you would need to provide AWS keys with suitable IAM policy to the AWS provider so that it could then assume some other role.
 
-## Pre-requisite:
-You will need an AWS Role ARN that will be the target of Assume Role. You can find the ARN from the Console or search via AWS CLI:
+## Pre-requisites:
+You will need an AWS Role ARN that will be the target of Assume Role. You can find the ARN from the Console or search via AWS CLI, then attempt an assume role via `aws sts assume-role` command:
 ```
-aws iam list-roles --query "Roles[?RoleName == 'test-role'].[RoleName, Arn]"
+export role_name=<name_of_existing_role>
+aws iam list-roles --query "Roles[?RoleName == '${role_name}'].[RoleName, Arn]"
+aws sts assume-role --role-arn "<role_arn>" --role-session-name AWSCLI-Session
 ```
 
 ## Steps using TFE SaaS:
@@ -23,22 +25,46 @@ export TFE_WORKSPACE="terraform-aws-s3-tests"
 
 tfe workspace list
 tfe workspace new
-tfe pushvars -senv-var "AWS_ACCESS_KEY_ID=aws_access_key_id"
-tfe pushvars -senv-var "AWS_SECRET_ACCESS_KEY=aws_secret_access_key"
-tfe pushvars -env-var "CONFIRM_DESTROY=1"
+tfe pushvars -svar "aws_access_key=aws_access_key_id"
+tfe pushvars -svar "aws_secret_key=aws_secret_access_key"
 tfe pushvars -var "bucket_name=tf-test-bucket-$(date +%s)"
 tfe pushvars -var "role_arn=assume_role_arn"
+tfe pushvars -env-var "CONFIRM_DESTROY=1"
 tfe pushconfig -vcs false -poll 5 .
 
 # View [TFE UI](https://app.terraform.io)
 # Destroy bucket and workspace from UI
 ```
 
-## Steps using Terraform OSS
+## Steps using Terraform OSS - using Terraform variables
+The steps below demonstrate how to supply the source credentials using Terraform variables
 ```
 git clone https://github.com/kawsark/terraform-aws-s3-tests.git
 cd terraform-aws-s3-tests
 git checkout assumerole
+
+# Export AWS credentials (Not needed if running with appropriate EC2 instance profile)
+export TF_VAR_aws_access_key=aws_access_key_id
+export TF_VAR_aws_secret_key=aws_secret_access_key
+
+# Export Terraform variables:
+export TF_VAR_bucket_name="tf-test-bucket-$(date +%s)"
+export TF_VAR_role_arn="assume_role_arn"
+
+# Run terraform plan and apply:
+
+terraform init
+terraform plan 
+terraform apply 
+```
+
+## Steps using Terraform OSS - using Environment variables
+The steps below demonstrate how to supply the source credentials using Environment variables
+```
+git clone https://github.com/kawsark/terraform-aws-s3-tests.git
+cd terraform-aws-s3-tests
+git checkout assumerole
+cp aws-env-vars.tf.example aws.tf
 
 # Export AWS credentials (Not needed if running with appropriate EC2 instance profile)
 export AWS_ACCESS_KEY_ID=aws_access_key_id
