@@ -6,6 +6,11 @@ Note: Using the assume_role option in the AWS provider does require bootstrappin
 - If you end up using Private Terraform Enterprise (TFE) in AWS, you can also use the EC2 instance profile.
 - Witn the SaaS implementation of TFE you would need to provide AWS keys with suitable IAM policy to the AWS provider so that it could then assume some other role.
 
+**Note:** to confirm that Terraform is performing an AssumeRole, you can set an environment variable `TF_LOG=1`. The plan output will then produce some debug output such as below:
+```
+2019-02-04T15:13:51.704Z [DEBUG] plugin.terraform-provider-aws_v1.57.0_x4: 2019/02/04 15:13:51 [INFO] Attempting to AssumeRole arn:aws:iam::753646501470:role/kawsar_assume_role_s3 (SessionName: "terraform-assume-role", ExternalId: "", Policy: "")
+```
+
 ## Pre-requisites:
 You will need an AWS Role ARN that will be the target of Assume Role. You can find the ARN from the Console or search via AWS CLI, then attempt an assume role via `aws sts assume-role` command:
 ```
