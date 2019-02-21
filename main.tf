@@ -1,3 +1,7 @@
+variable "num_of_buckets" {
+  default = "1"
+}
+
 variable "owner" {
   default = "demouser"
 }
@@ -18,19 +22,13 @@ variable "env" {
   default = "dev"
 }
 
-  variable "role_arn" {
-  description = "The ARN of an existing role that Terraform should Assume"
-}
-
 provider "aws" {
   region = "${var.aws_region}"
-  assume_role {
-    role_arn     = "${var.role_arn}"
-  }
 }
 
 resource "aws_s3_bucket" "s3-test" {
-  bucket = "${var.bucket_name}"
+  count = "${var.num_of_buckets}"
+  bucket = "${var.bucket_name}-${count.index}"
   acl    = "private"
   region   = "${var.aws_region}"
 
@@ -40,4 +38,8 @@ resource "aws_s3_bucket" "s3-test" {
     Owner       = "${var.owner}"
     TTL         = "${var.ttl}"
   }
+}
+
+output "bucket_ids" {
+  value = "${aws_s3_bucket.s3-test.*.id}"
 }
