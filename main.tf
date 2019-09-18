@@ -1,3 +1,7 @@
+terraform {
+  required_version = "<= 0.11.14"
+}
+
 variable "num_of_buckets" {
   default = "1"
 }
