@@ -1,12 +1,13 @@
-# terraform-aws-s3-tests
-Terraform code to create AWS S3 bucket with various configuration. This branch uses AWS Assume role authentication for the [Terraform AWS Provider](https://www.terraform.io/docs/providers/aws/#assume-role)
+# CLI Driven Run with AWS AssumeRole
+Terraform code to create AWS S3 bucket with various configuration. 
 
 This repository uses Terraform to create an AWS S3 bucket with various methods:
-1. Terraform OpenSource CLI - master branch.
-2. [TFE CLI](https://github.com/hashicorp/tfe-cli) - depreciated. This will be replaced with the Terraform Helper tool.
-3. CLI Driven Run - Please use the [enhanced_remote_backend branch](https://github.com/kawsark/terraform-aws-s3-tests/tree/enhanced_remote_backend)
-4. Terraform OpenSource/TFE with AWS AssumeRole. Please use the [assumerole branch](https://github.com/kawsark/terraform-aws-s3-tests/tree/assumerole)
-5. API Driven Run - [Terraform Enterprise API invocations using `curl`](curl.md)
+1. Terraform OpenSource CLI - [master branch](https://github.com/kawsark/terraform-aws-s3-tests)
+2. CLI Driven Run - Please use the [enhanced_remote_backend branch](https://github.com/kawsark/terraform-aws-s3-tests/tree/enhanced_remote_backend)
+3. ** CLI Driven Run with AWS AssumeRole ** Please use the [assumerole branch](https://github.com/kawsark/terraform-aws-s3-tests/tree/assumerole)
+4. API Driven Run - [Terraform Enterprise API invocations using `curl`](curl.md)
+
+This branch uses AWS Assume role authentication for the [Terraform AWS Provider](https://www.terraform.io/docs/providers/aws/#assume-role)
 
 Note: Using the assume_role option in the AWS provider does require bootstrapping with other AWS credentials or using the Instance profile. 
 - If you generally use Terraform OSS in AWS, you may use the EC2 instance profile. 
@@ -26,62 +27,40 @@ aws iam list-roles --query "Roles[?RoleName == '${role_name}'].[RoleName, Arn]"
 aws sts assume-role --role-arn "<role_arn>" --role-session-name AWSCLI-Session
 ```
 
-## Steps using Terraform Cloud:
-```
-git clone https://github.com/kawsark/terraform-aws-s3-tests.git
-cd terraform-aws-s3-tests
-export TFE_TOKEN=<your_tfe_token>
-export TFE_ORG=<your_tfe_org>
-export TFE_WORKSPACE="terraform-aws-s3-tests"
-
-tfe workspace list
-tfe workspace new
-tfe pushvars -senv-var "AWS_ACCESS_KEY_ID=aws_access_key_id"
-tfe pushvars -senv-var "AWS_SECRET_ACCESS_KEY=aws_secret_access_key"
-tfe pushvars -senv-var "CONFIRM_DESTROY=1"
-tfe pushvars -var "bucket_name=tf-test-bucket-$(date +%s)"
-tfe pushvars -var "role_arn=assume_role_arn"
-tfe pushvars -env-var "CONFIRM_DESTROY=1"
-tfe pushconfig -vcs false -poll 5 .
-
-# View [TFE UI](https://app.terraform.io)
-# Destroy bucket from UI
+## Steps using Terraform Cloud CLI Driven Run
+Set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY sensitive Environment variables on the TFE Workspace using the UI or using [Terraform Helper](https://github.com/hashicorp-community/tf-helper) tool. Steps for using the TF Helper tool is shown below.
 ```
 git clone https://github.com/kawsark/terraform-aws-s3-tests.git
 cd terraform-aws-s3-tests
 git checkout assumerole
 
-## Steps using `aws sts assume-role` and Terraform Enterprise with [TFE CLI](https://github.com/hashicorp/tfe-cli)
-```
-git clone https://github.com/kawsark/terraform-aws-s3-tests.git
-cd terraform-aws-s3-tests
-export TFE_TOKEN=<your_tfe_token>
-export TFE_ORG=<your_tfe_org>
-export TFE_WORKSPACE="terraform-aws-s3-tests"
+# Setup API token for remote backend
+terraform login
 
-# Assume role via CLI:
-# https://aws.amazon.com/premiumsupport/knowledge-center/iam-assume-role-cli/
-# Use following command to look up the ARN for an existing role:
-aws iam list-roles --query "Roles[?RoleName == 'test-role'].[RoleName, Arn]"
+# Copy the backend.tf.txample file and edit it
+# Adjust your organization, workspace and TFE server address (if using Private TFE)
+cp backend.tf.example backend.tf
+vi backend.tf
+terraform workspace new cli 
+#terraform workspace select cli
+terraform init
 
-# Assume role:
-export role_arn="<your_assume_role_arn>"
-aws sts assume-role --role-arn "${role_arn}" --role-session-name AWSCLI-Session > assume_role.txt
+# Use the TF Helper tool steps to set variables:
+export TFH_name="terraform-aws-s3-tests-cli"
+export TFE_TOKEN="<API_token>"
+export TFH_org="<<Organization_name>>"
 
-export AWS_ACCESS_KEY_ID=$(cat assume_role.txt | jq -r .Credentials.AccessKeyId)
-export AWS_SECRET_ACCESS_KEY=$(cat assume_role.txt | jq -r .Credentials.SecretAccessKey)
-export AWS_SESSION_TOKEN=$(cat assume_role.txt | jq -r .Credentials.SessionToken)
+tfh pushvars -senv-var AWS_ACCESS_KEY_ID="${AWS_ACCESS_KEY_ID}"
+tfh pushvars -senv-var AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}"
+tfh pushvars -var role_arn="$role_arn"
+tfh pushvars -env-var "CONFIRM_DESTROY=1"
+tfh pushvars -var bucket_name="tf-test-bucket-$(date +%s)"
 
-tfe workspace list
-tfe workspace new
-tfe pushvars -senv-var "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}"
-tfe pushvars -senv-var "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}"
-tfe pushvars -senv-var "AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}"
+# Run terraform plan and apply:
+terraform init
+terraform plan 
+terraform apply 
 
-tfe pushvars -senv-var "CONFIRM_DESTROY=1"
-tfe pushvars -var "bucket_name=tf-test-bucket-$(date +%s)"
-tfe pushconfig -vcs false -poll 5 .
-
-# View [TFE UI](https://app.terraform.io)
-# Destroy bucket from UI
+# Destroying the bucket:
+terraform destroy
 ```
