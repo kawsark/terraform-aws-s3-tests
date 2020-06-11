@@ -1,8 +1,8 @@
 # terraform-aws-s3-tests
-This repository uses Terraform to create an AWS S3 bucket with various methods:
-1. Terraform OpenSource CLI - master branch.
+This repository uses Terraform to create an AWS S3 bucket with various methods
+1. **Terraform OpenSource CLI** (this branch)
 2. CLI Driven Run - Please use the [enhanced_remote_backend branch](https://github.com/kawsark/terraform-aws-s3-tests/tree/enhanced_remote_backend)
-3. Terraform OpenSource/TFE with AWS AssumeRole. Please use the [assumerole branch](https://github.com/kawsark/terraform-aws-s3-tests/tree/assumerole)
+3. CLI Driven Run with AWS AssumeRole - Please use the [assumerole branch](https://github.com/kawsark/terraform-aws-s3-tests/tree/assumerole)
 4. API Driven Run - [Terraform Enterprise API invocations using `curl`](curl.md)
 
 ## Steps using Terraform OpenSource
