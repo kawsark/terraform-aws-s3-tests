@@ -1,5 +1,9 @@
 # terraform-aws-s3-tests
-Terraform code to create AWS S3 bucket with various configuration. 
+This repository uses Terraform to create an AWS S3 bucket with various methods
+1. Terraform OpenSource CLI - [master branch](https://github.com/kawsark/terraform-aws-s3-tests)
+2. **CLI Driven Run** - (this branch)
+3. CLI Driven Run with AWS AssumeRole - Please use the [assumerole branch](https://github.com/kawsark/terraform-aws-s3-tests/tree/assumerole)
+4. API Driven Run - [Terraform Enterprise API invocations using `curl`](https://github.com/kawsark/terraform-aws-s3-tests/blob/master/curl.md)
 
 This branch uses the CLI Driven Workflow using a [Remote Backend](https://www.terraform.io/docs/backends/types/remote.html)
 
@@ -11,6 +15,9 @@ git clone https://github.com/kawsark/terraform-aws-s3-tests.git
 cd terraform-aws-s3-tests
 git checkout enhanced_remote_backend
 
+# Setup API token for remote backend
+terraform login
+
 # Copy the backend.tf.txample file and edit it
 # Adjust your organization, workspace and TFE server address (if using Private TFE)
 cp backend.tf.example backend.tf
@@ -18,9 +25,6 @@ vi backend.tf
 terraform workspace new cli 
 #terraform workspace select cli
 terraform init
-
-# Setup API token for remote backend
-tfh login
 
 # Use the TF Helper tool steps to set variables:
 export TFH_name="terraform-aws-s3-tests-cli"
