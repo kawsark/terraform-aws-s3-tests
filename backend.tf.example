@@ -1,0 +1,10 @@
+terraform {
+  backend "remote" {
+    hostname = "app.terraform.io"
+    organization = "my-tfe-org"
+
+    workspaces {
+      prefix = "my-s3-workspace"
+    }
+  }
+}
