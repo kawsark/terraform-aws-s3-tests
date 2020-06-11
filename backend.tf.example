@@ -4,7 +4,7 @@ terraform {
     organization = "tfe-org"
 
     workspaces {
-      name = "tfe-workspace"
+      prefix = "terraform-aws-s3-tests-"
     }
   }
 }

@@ -1,7 +1,3 @@
-terraform {
-  required_version = "<= 0.11.14"
-}
-
 variable "num_of_buckets" {
   default = "1"
 }
@@ -23,33 +19,28 @@ variable "aws_region" {
 }
 
 variable "env" {
-  default = "dev"
+  default = "development"
 }
 
-variable "aws_access_key" {}
-
-variable "aws_secret_key" {}
-
 provider "aws" {
-  region = "${var.aws_region}"
-  access_key = "${var.aws_access_key}"
-  secret_key = "${var.aws_secret_key}"
+  region     = var.aws_region
 }
 
 resource "aws_s3_bucket" "s3-test" {
-  count = "${var.num_of_buckets}"
+  count  = var.num_of_buckets
   bucket = "${var.bucket_name}-${count.index}"
   acl    = "private"
-  region   = "${var.aws_region}"
+  region = var.aws_region
 
-  tags {
-    Name        = "${var.bucket_name}"
-    Environment = "${var.env}"
-    Owner       = "${var.owner}"
-    TTL         = "${var.ttl}"
+  tags = {
+    Name        = var.bucket_name
+    Environment = var.env
+    Owner       = var.owner
+    TTL         = var.ttl
   }
 }
 
 output "bucket_ids" {
-  value = "${aws_s3_bucket.s3-test.*.id}"
+  value = aws_s3_bucket.s3-test.*.id
 }
+
